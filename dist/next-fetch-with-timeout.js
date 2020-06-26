@@ -2,8 +2,8 @@
  * name: @feizheng/next-fetch-with-timeout
  * description: Fetch with timeout options.
  * homepage: https://github.com/afeiship/next-fetch-with-timeout
- * version: 1.0.0
- * date: 2020-06-26T08:08:58.011Z
+ * version: 1.0.1
+ * date: 2020-06-26T08:16:23.215Z
  * license: MIT
  */
 
@@ -13,7 +13,7 @@
   var DEFAULT_OPTIONS = { timeout: 30 * 1e3, AbortController: global.AbortController };
 
   nx.fetchWithTimeout = function (inFetch) {
-    return function (url, inOptions) {
+    return function (inUrl, inOptions) {
       var options = nx.mix(null, DEFAULT_OPTIONS, inOptions);
       var AbortController = options.AbortController;
       var controller = new AbortController();
@@ -24,7 +24,7 @@
       }, options.timeout);
 
       return new Promise(function (resolve, reject) {
-        inFetch(url, options).
+        inFetch(inUrl, options).
           then(function (res) {
             clearTimeout(timer);
             resolve(res);

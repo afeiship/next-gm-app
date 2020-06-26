@@ -4,7 +4,7 @@
   var DEFAULT_OPTIONS = { timeout: 30 * 1e3, AbortController: global.AbortController };
 
   nx.fetchWithTimeout = function (inFetch) {
-    return function (url, inOptions) {
+    return function (inUrl, inOptions) {
       var options = nx.mix(null, DEFAULT_OPTIONS, inOptions);
       var AbortController = options.AbortController;
       var controller = new AbortController();
@@ -15,7 +15,7 @@
       }, options.timeout);
 
       return new Promise(function (resolve, reject) {
-        inFetch(url, options).
+        inFetch(inUrl, options).
           then(function (res) {
             clearTimeout(timer);
             resolve(res);
