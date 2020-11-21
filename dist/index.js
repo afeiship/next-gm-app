@@ -3,7 +3,7 @@
  * description: Fetch with timeout options.
  * homepage: https://github.com/afeiship/next-fetch-with-timeout
  * version: 1.0.0
- * date: 2020-11-21 09:03:17
+ * date: 2020-11-21 09:05:57
  * license: MIT
  */
 
