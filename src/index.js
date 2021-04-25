@@ -1,30 +1,20 @@
 (function () {
   var global = global || this || window || Function('return this')();
   var nx = global.nx || require('@jswork/next');
-  var DEFAULT_OPTIONS = { timeout: 30 * 1e3, AbortController: global.AbortController };
+  var DEFAULT_OPTIONS = { timeout: 0 };
 
   nx.fetchWithTimeout = function (inFetch) {
     return function (inUrl, inOptions) {
-      var options = nx.mix(null, DEFAULT_OPTIONS, inOptions);
-      var AbortController = options.AbortController;
       var controller = new AbortController();
-      options = nx.mix({ signal: controller.signal }, options);
+      var options = nx.mix(null, { signal: controller.signal }, DEFAULT_OPTIONS, inOptions);
 
-      var timer = setTimeout(function () {
-        controller.abort();
-      }, options.timeout);
+      if (options.timeout) {
+        setTimeout(function () {
+          controller.abort();
+        }, options.timeout);
+      }
 
-      return new Promise(function (resolve, reject) {
-        inFetch(inUrl, options)
-          .then(function (res) {
-            clearTimeout(timer);
-            resolve(res);
-          })
-          .catch(function (err) {
-            clearTimeout(timer);
-            reject(err);
-          });
-      });
+      return inFetch(inUrl, options);
     };
   };
 

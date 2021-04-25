@@ -1,11 +1,37 @@
 (function () {
   require('../src');
 
+  const fetch = require('node-fetch');
+
+  jest.setTimeout(50 * 1000);
+
+  // global.AbortController = AbortController;
+
   describe('api.basic test', () => {
-    test('nx.fetchWithTimeout', function () {
-      const obj1 = { name: 'fei' };
-      const obj2 = { email: '1290657123@qq.com' };
-      const result = {};
+    test('nx.fetchWithTimeout should caught err when timeout', (done) => {
+      var url = 'https://reactnative.dev/movies.json';
+      var newFetch = nx.fetchWithTimeout(fetch);
+      newFetch(url, { timeout: 1 })
+        .then((res) => res.json())
+        .catch((err) => {
+          expect(err.type).toBe('aborted');
+        })
+        .finally(() => {
+          done();
+        });
+    });
+
+    test('nx.fetchWithTimeout should get data without timeout:(timeout: 0)', (done) => {
+      var url = 'https://reactnative.dev/movies.json';
+      var newFetch = nx.fetchWithTimeout(fetch);
+      newFetch(url)
+        .then((res) => res.json())
+        .then((res) => {
+          expect(res.title).toBe('The Basics - Networking');
+        })
+        .finally(() => {
+          done();
+        });
     });
   });
 })();
