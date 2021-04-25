@@ -21,6 +21,7 @@
             resolve(res);
           })
           .catch(function (err) {
+            clearTimeout(timer);
             reject(err);
           });
       });
