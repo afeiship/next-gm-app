@@ -14,6 +14,7 @@
           reject(TIMEOUT_ERROR);
         }, options.timeout);
 
+        // finally can optimize code - but: https://caniuse.com/?search=finally
         inFetch(inUrl, options)
           .then(function (res) {
             clearTimeout(timer);

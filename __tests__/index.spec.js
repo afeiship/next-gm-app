@@ -15,7 +15,7 @@
         .then((res) => res.json())
         .catch((err) => {
           console.log(err);
-          // expect(err.type).toBe('aborted');
+          expect(err.type).toBe('timeout');
         })
         .finally(() => {
           done();

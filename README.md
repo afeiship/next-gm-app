@@ -15,7 +15,10 @@ npm install -S @jswork/next-fetch-with-timeout
 ```js
 import '@jswork/next-fetch-with-timeout';
 
-//DOCS here!
+const betterFetch = nx.fetchWithTimeout(fetch);
+betterFetch('https://api.github.com/users/afeiship').then(res=>res.json()).then(res=>{
+  console.log(res);
+})
 ```
 
 ## license
