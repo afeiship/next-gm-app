@@ -8,14 +8,19 @@
 
 ## installation
 ```bash
-npm install -S @jswork/next-gm-app
+yarn add -S @jswork/next-gm-app
 ```
 
 ## usage
 ```js
 import '@jswork/next-gm-app';
 
-//DOCS here!
+nx.declare({
+    extends: nx.GmApp,
+    methods: {
+        // your methods...
+    }
+});
 ```
 
 ## license
