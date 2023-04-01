@@ -1,34 +1,63 @@
-(function () {
-  var global = global || this || window || Function('return this')();
-  var nx = global.nx || require('@jswork/next');
-  var DEFAULT_OPTIONS = { timeout: 0 };
-  var TIMEOUT_ERROR = { type: 'timeout', message: 'Timeout: from `next-fetch-with-timeout`' };
+import nx from '@jswork/next';
+const defaults = { context: global };
 
-  nx.fetchWithTimeout = function (inFetch) {
-    return function (inUrl, inOptions) {
-      var options = nx.mix(null, DEFAULT_OPTIONS, inOptions);
-      if (!options.timeout) return inFetch(inUrl, options);
+// global ctx from unsafeWindow;
+const $ = window.$;
+const gmsdk = window.gmsdk;
 
-      return new Promise(function (resolve, reject) {
-        var timer = setTimeout(function () {
-          reject(TIMEOUT_ERROR);
-        }, options.timeout);
-
-        // finally can optimize code - but: https://caniuse.com/?search=finally
-        inFetch(inUrl, options)
-          .then(function (res) {
-            clearTimeout(timer);
-            resolve(res);
-          })
-          .catch(function (error) {
-            clearTimeout(timer);
-            reject(error);
-          });
+const NxGmApp = nx.declare('nx.GmApp', {
+  statics: {
+    tips: function (inMsg, inIcon) {
+      $.toast({
+        icon: inIcon || 'success',
+        heading: '温馨提醒',
+        text: inMsg,
+        position: 'top-right',
+        stack: true,
+        hideAfter: 1000
       });
-    };
-  };
-
-  if (typeof module !== 'undefined' && module.exports) {
-    module.exports = nx.fetchWithTimeout;
+    },
+    cp2tips: function (inText, inMsg) {
+      gmsdk.setClipboard(inText);
+      tips(inMsg || '已复制到剪贴板');
+    }
+  },
+  properties: {
+    domain: function () {
+      return location.host;
+    }
+  },
+  methods: {
+    init: function () {
+      this.initUI();
+      this.initEvents();
+    },
+    initUI: function (inHtml) {
+      $('body').append(inHtml);
+    },
+    initEvents: function () {
+      this.registerActions();
+    },
+    /**
+     * @private: reigster button actions
+     */
+    registerActions: function () {
+      var self = this;
+      $('body').on('click', '[data-action]', function () {
+        const action = $(this).data('action');
+        const method = nx.camelize(action);
+        if (typeof self[method] === 'function') {
+          self[method]();
+        } else {
+          console.warn('Not found method:', method);
+        }
+      });
+    }
   }
-})();
+});
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = NxGmApp;
+}
+
+export default NxGmApp;
